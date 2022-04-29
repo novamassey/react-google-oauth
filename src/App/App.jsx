@@ -1,14 +1,47 @@
-import Auth from "./components/Auth/Auth";
+// import Auth from "../components/Auth/Auth";
+import NavBar from "../components/NavBar/NavBar";
 import GoogleLogin from "react-google-login";
 import { useState } from "react";
 
 function App() {
+  const [loginData, setLoginData] = useState(
+    localStorage.getItem("loginData")
+      ? JSON.parse(localStorage.getItem("loginData"))
+      : null
+  );
+
+  const handleFailure = (result) => {
+    alert(result);
+  };
+
+  const handleLogin = async (googleData) => {
+    const res = await fetch("/api/google-login", {
+      method: "POST",
+      body: JSON.stringify({
+        token: googleData.tokenId,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await res.json();
+    setLoginData(data);
+    localStorage.setItem("loginData", JSON.stringify(data));
+  };
+  const handleLogout = () => {
+    localStorage.removeItem("loginData");
+    setLoginData(null);
+  };
   return (
     <main className="App">
-      <Auth />
-
       <>
-        {/* <NavBar/> */}
+        <NavBar
+          login={handleLogin}
+          logout={handleLogout}
+          failure={handleFailure}
+          user={loginData}
+        />
         {/* <Routes>
       <Route path="" element={<Auth/>}/>
     </Routes> */}
