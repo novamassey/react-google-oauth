@@ -15,7 +15,7 @@ function App() {
   };
 
   const handleLogin = async (googleData) => {
-    const res = await fetch("/api/google-login", {
+    const response = await fetch("/api/google-login", {
       method: "POST",
       body: JSON.stringify({
         token: googleData.tokenId,
@@ -25,7 +25,7 @@ function App() {
       },
     });
 
-    const data = await res.json();
+    const data = await response.json();
     setLoginData(data);
     localStorage.setItem("loginData", JSON.stringify(data));
   };
